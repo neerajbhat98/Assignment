@@ -1,0 +1,29 @@
+#head_tile {
+  
+    background-position: center;
+    height: 15vh;
+}
+body {
+ background-image: url('SecMaster.jpg');
+ }
+ .table{
+    overflow-y:scroll;
+    overflow-x: scroll;
+    height:60vh;
+    display:block;
+    margin-top: 2%;
+    margin-left: 1%;
+    background-color: #2a5784;
+    margin-right: 3%;
+ }
+.modal-header{
+    background-color: #f1572e;
+}
+.modal-footer{
+    display: none;
+}
+#head_buttons{
+    margin-left: 45%;
+    margin-top: 2%;
+    font-size: 8vh;
+}

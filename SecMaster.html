@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link rel="stylesheet" href="SecMaster.css">
+</head>
+
+<body>
+
+
+    <div id="SecMasterApp">
+        <div id="head_tile">
+            <div class="btn-group btn-group-toggle" id="head_buttons" data-toggle="buttons">
+
+                <label class="btn btn-secondary btn-lg">
+                    <input type="radio" name="options" id="option2" checked v-on:click="currentTab = 'Equity'"> Equity
+                </label>
+                <label class="btn btn-secondary btn-lg">
+                    <input type="radio" name="options" id="option3" v-on:click="currentTab = 'Bond'"> Bonds
+                </label>
+            </div>
+
+        </div>
+
+        <span v-show="currentTab =='Bond'">
+            <component-security v-bind:tab="currentTab" v-bind:header="bond_header" v-bind:security-data="bond_data">
+            </component-security>
+        </span>
+        <span v-show="currentTab =='Equity'">
+            <component-security v-bind:tab="currentTab" v-bind:header="equity_header"
+                v-bind:security-data="equity_data">
+            </component-security>
+        </span>
+
+
+
+
+    </div>
+
+
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <script src="vue.js"></script>
+    <script src="SecMaster.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.4.0/bootbox.min.js"></script>
+    <script src="bootbox.locales.min.js"></script>
+</body>
+
+</html>
