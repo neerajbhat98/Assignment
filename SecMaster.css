@@ -9,7 +9,7 @@ body {
  .table{
     overflow-y:scroll;
     overflow-x: scroll;
-    height:60vh;
+    height:68vh;
     display:block;
     margin-top: 2%;
     margin-left: 1%;
@@ -19,8 +19,11 @@ body {
 .modal-header{
     background-color: #f1572e;
 }
+.thead{
+    position:absolute;
+}
 .modal-footer{
-    display: none;
+    display: ;
 }
 #head_buttons{
     margin-left: 45%;
