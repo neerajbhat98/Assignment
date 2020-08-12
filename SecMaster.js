@@ -1,15 +1,17 @@
-var Insert = Vue.component('Insert', {
-    template:
-        `
+var update = Vue.component('update',{
+    template :
+    `
     <div>
-    Neeraj
-    </div>
+      neeraj bhat
+     </div>
+  
     `
 })
 
 Vue.component('component-security', {
     data: function () {
         return {
+            gus : [],
             filterlist: this.securityData,
             parent_id_SearchFieldsEquity: [],
             parent_id_SearchFieldsBond: [],
@@ -21,8 +23,8 @@ Vue.component('component-security', {
     },
 
     props: ['header', 'securityData', 'tab'],
-    components: {
-        'Insert': Insert
+    components : {
+        'update':update
     },
     computed: {
         filterlist() {
@@ -55,11 +57,8 @@ Vue.component('component-security', {
     template: `
     <div >
         <div>
-             <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">
-                Launch demo modal
-            </button>-->
-           
-               
+            
+                
               <form v-show="tab=='Equity'" class="form-inline" style =" margin-left: 10%;">
                 
                     <span v-for ="(value,index) in SearchFieldsEquity" style="margin-left   :2%"> 
@@ -79,7 +78,7 @@ Vue.component('component-security', {
         <span style ="margin-left:40% ">
         <button type="button" class="btn btn-info" v-on:click="DeleteMultipleSecurities" style="margin-top:2%">Delete Multiple
         Securities</button>
-        <button type="button" data-toggle="modal"  class="btn btn-info" @click="Neeraj" style="margin-top:2%" data-target="#exampleModal">
+        <button type="button" data-toggle="modal"  class="btn btn-info" @click="InsertSecurity()" style="margin-top:2%" data-target="#exampleModal">
         Insert Security  
         </button>
         </span>
@@ -98,7 +97,8 @@ Vue.component('component-security', {
                     <td> <input type="checkbox" class="checkbox" v-model="Selected[index]" /></td>
                     <td ><button type="button" class="btn btn-sm btn-danger"  v-on:click="DeleteSingleSecurity(tab,index,data[index].SecurityID)"><i class="fa fa-trash-o"
                                 aria-hidden="true"></i></button>
-                                      
+                                <button type="button" style="margin-top:2%" class="btn btn-sm btn-info"  v-on:click="UpdateSecurity(index,data[index].SecurityID)"><i class="fa fa-edit"></i>
+                                </button>        
                                 </td>
                     <td v-for="(value, propertyName) in column"> {{ value }}</td>
                                      
@@ -111,32 +111,161 @@ Vue.component('component-security', {
         
     `,
     methods: {
-        Neeraj: function () {
-            bootbox.dialog({
-                message: "I am a custom dialog",
-                title: "Custom title",
-                onEscape: function() {},
-                show: true,
-                backdrop: true,
-                closeButton: true,
-                animate: true,
-                className: "my-modal",
-                buttons: {
-                  success: {   
-                    label: "Success!",
-                    className: "btn-success",
-                    callback: function() {}
-                  },
-                  "Danger!": {
-                    className: "btn-danger",
-                    callback: function() {}
-                  },
-                  "Another label": function() {}
-                }
-              });
+        
+        InsertSecurity : function(){
+            var p="<form id='infos' action=''>";
+            for(item in this.header)
+            {
+                var j="inp"+item;				
+                p=p+"<div>"+this.header[item]+"<input type='text'  id="+j+"/></br>"
+            }
+            p=p+"</form";
+            bootbox.alert(p)
+           
+        },
+       
+        UpdateFormEquity:function(index,SID){
+            var Security_Name = this.data[index].Security_Name
+            console.log(index)
+            console.log(this.data)
+            var msg = "<form id='update'>\
+            Security_Name  <input type='text'  class='bootboxInput'/><br/>\
+            Security_Description <input type='text'  class='bootboxInput'/><br/>\
+            Shares_Per_ADR	<input type='number'  class='bootboxInput'/><br/>\
+            Total_Shares_Outstanding<input type ='number' step='0.01'  class='bootboxInput'/>\
+            </form>" 
+            var SName,shares,total_shares,SDes;
+            var title = "Update Security "+this.tab+"with Security ID : "+SID
+            bootbox.confirm({
+                message: msg,
+                title : title,
+                centerVertical:true,
+                callback: result => {
+                   if(result)
+                   {
+                    window.form = document.getElementById('update')
+                    var form = window.form
+                    SName = form[0].value
+                    if(SName=="")
+                    SName = this.data[index].Security_Name
+                    shares =form[2].value
+                    if(shares=="")
+                    shares = this.data[index].Shares_Per_ADR
+
+                    total_shares = form[3].value
+                    if(total_shares=="")
+                    total_shares = this.data[index].Total_Shares_Outstanding
+                    SDes = form[1].value
+                    if(SDes=="")
+                    SDes = this.data[index].Security_Description
+                    axios.get('https://localhost:5001/SQLHandler/Equity/Update',
+                    {
+                        params :{
+                            SID : SID,
+                            SDes:SDes,
+                            SName : SName,
+                            shares: shares,
+                            total_shares : total_shares
+                        }
+                    
+                    }).then(response => {
+                         
+                       this.data[index].Security_Name =  SName
+                       this.data[index].Security_Description =  SDes
+                       this.data[index].Shares_Per_ADR =shares 
+                       this.data[index].Total_Shares_Outstanding  = total_shares
+
+                      })
+                      .catch(function (error) {
+                        console.log(error);
+                      });
+                     
+
+
+                   }
+                  
              
+                }
+            });
+        
+
+        },
+        UpdateFormBond : function(index, SID)
+        {  var Security_Name = this.data[index].Security_Name
+            console.log(index)
+            console.log(this.data)
+            var msg = "<form id='update'>\
+            Security_Name  <input type='text'  class='bootboxInput'/ ><br/>\
+            Security_Description <input type='text' class='bootboxInput'/><br/>\
+            Coupon Frequency	<input type='number'  class='bootboxInput'/><br/>\
+            Call Notification Max Days<input type ='number' step='0.01'  class='bootboxInput'/>\
+            </form>" 
+            var SName,COUPON_FREQUENCY,CALL_NOTIFICATION_MAX_DAYS,SDes;
+            var title = "Update Security "+this.tab+" with Security ID : "+SID
+            bootbox.confirm({
+                message: msg,
+                title : title,
+                centerVertical:true,
+                callback: result => {
+                   if(result)
+                   {
+                    window.form = document.getElementById('update')
+                    var form = window.form
+                    SName = form[0].value
+                    if(SName=="")
+                    SName = this.data[index].Security_Name
+
+                    SDes = form[1].value
+                    if(SDes=="")
+                    SDes = this.data[index].Security_Description
+
+                    COUPON_FREQUENCY = form[2].value
+                    if(COUPON_FREQUENCY=="")
+                    COUPON_FREQUENCY = this.data[index].COUPON_FREQUENCY
+
+                    CALL_NOTIFICATION_MAX_DAYS = form[3].value
+                    if(CALL_NOTIFICATION_MAX_DAYS=="")
+                    CALL_NOTIFICATION_MAX_DAYS = this.data[index].CALL_NOTIFICATION_MAX_DAYS
+                    
+                    axios.get('https://localhost:5001/SQLHandler/Bond/Update',
+                    {
+                        params :{
+                            SID : SID,
+                            SDes:SDes,
+                            SName : SName,
+                            freq: COUPON_FREQUENCY,
+                            notification : CALL_NOTIFICATION_MAX_DAYS
+                        }
+                    
+                    }).then(response => {
+                         
+                       this.data[index].Security_Name = SName 
+                       this.data[index].Security_Description = SDes
+                       this.data[index].COUPON_FREQUENCY =  COUPON_FREQUENCY
+                       this.data[index].CALL_NOTIFICATION_MAX_DAYS  = CALL_NOTIFICATION_MAX_DAYS
+
+                      })
+                      .catch(function (error) {
+                        console.log(error);
+                      });
+                     
+
+
+                   }
+                  
+             
+                }
+            });
+        
+        },
+        UpdateSecurity:function(index,SID){
+             if(this.tab=="Equity")
+             this.UpdateFormEquity(index,SID);     
+             else
+             this.UpdateFormBond(index,SID);    
             
         },
+        
         CheckBox: function (ID) {
             const index = this.Selected.indexOf(ID);
             if (index > -1) {
@@ -222,6 +351,7 @@ Vue.component('component-security', {
             var msg = "<b>Do you really want to delete " + security + " with SecurityID " + SID; +"</b>"
             bootbox.confirm({
                 size: "small",
+                centerVertical : true,
                 message: msg,
                 callback: result => {
                     if (result) {
@@ -255,7 +385,7 @@ Vue.component('component-security', {
 
                             ).then(res => {
                                 if (res.status == 200) {
-
+                                    this.data.splice(index, 1)
                                 }
 
                             }).catch(err => {
